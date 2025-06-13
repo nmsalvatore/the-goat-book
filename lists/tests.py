@@ -1,3 +1,5 @@
+import re
+
 from django.test import TestCase
 
 
@@ -6,6 +8,17 @@ class HomePageTest(TestCase):
         response = self.client.get("/")
         self.assertTemplateUsed(response, "home.html")
 
-    def test_renders_homepage_content(self):
+    def test_renders_input_form(self):
         response = self.client.get("/")
-        self.assertContains(response, "To-Do")
+        self.assertContains(response, '<form method="POST">')
+        self.assertRegex(
+            response.content.decode(),
+            r'<input[^>]*name\s*=\s*["\']item_text["\']',
+        )
+
+    def test_can_save_a_POST_request(self):
+        response = self.client.post(
+            "/", data={"item_text": "A new list item"}
+        )
+        self.assertContains(response, "A new list item")
+        self.assertTemplateUsed(response, "home.html")
