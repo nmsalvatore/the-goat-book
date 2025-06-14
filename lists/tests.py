@@ -20,8 +20,23 @@ class HomePageTest(TestCase):
         response = self.client.post(
             "/", data={"item_text": "A new list item"}
         )
-        self.assertContains(response, "A new list item")
-        self.assertTemplateUsed(response, "home.html")
+
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, "A new list item")
+        self.assertRedirects(response, "/")
+
+    def test_only_saves_items_when_necessary(self):
+        self.client.get("/")
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_displays_all_list_items(self):
+        first_item = Item.objects.create(text="first item")
+        second_item = Item.objects.create(text="second item")
+        response = self.client.get("/")
+        self.assertContains(response, first_item.text)
+        self.assertContains(response, second_item.text)
+
 
 
 class ItemModelTest(TestCase):
