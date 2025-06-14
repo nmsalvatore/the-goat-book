@@ -1,5 +1,4 @@
-from django.shortcuts import redirect, render
-from django.urls.base import reverse
+from django.shortcuts import render
 
 
 def home_page(request):
