@@ -13,3 +13,6 @@ wheels/
 *.sqlite3
 *.sqlite
 *.db
+
+# Configuration files
+.ropeproject
